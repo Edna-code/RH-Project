@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel do Administrador</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      background-color: #fff;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    button.remover {
+      margin-top: 8px;
+      padding: 5px 10px;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button.remover:hover {
+      background-color: #cc0000;
+    }
+  </style>
+</head>
+
+<body>
+
+  <button id="btn-sair" style="
+  float: right;
+  margin-top: 10px;
+  background-color: #666;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+">Sair</button>
+
+
+  <h1>Painel do Administrador</h1>
+  <h2>Lista de Candidatos</h2>
+  <ul id="lista"></ul>
+
+  <script>
+    // Verifica se o admin está logado
+    const estaLogado = sessionStorage.getItem("adminLogado");
+    if (estaLogado !== "true") {
+      window.location.href = "login.html"; // redireciona se não estiver logado
+    }
+
+    const lista = document.getElementById("lista");
+
+    window.addEventListener("load", () => {
+      const candidatosSalvos = JSON.parse(localStorage.getItem("candidatos")) || [];
+      candidatosSalvos.forEach(mostrarCandidatoNaTela);
+    });
+
+    function mostrarCandidatoNaTela(candidato) {
+      const novoCandidato = document.createElement("li");
+
+      novoCandidato.innerHTML = `
+      <strong>${candidato.nome}</strong> - ${candidato.email}<br>
+      Tel: ${candidato.telefone} | Vaga: ${candidato.vaga}<br>
+      Currículo: <a href="${candidato.curriculo}" target="_blank">${candidato.curriculo}</a>
+      <br>
+      <button class="remover">Remover</button>
+    `;
+
+      novoCandidato.querySelector(".remover").addEventListener("click", () => {
+        novoCandidato.remove();
+
+        let candidatos = JSON.parse(localStorage.getItem("candidatos")) || [];
+        candidatos = candidatos.filter((c) => c.email !== candidato.email);
+        localStorage.setItem("candidatos", JSON.stringify(candidatos));
+      });
+
+      lista.appendChild(novoCandidato);
+    }
+
+    // Botão de sairdrrefcrc
+    const botaoSair = document.getElementById("btn-sair");
+    botaoSair.addEventListener("click", () => {
+      sessionStorage.removeItem(",jcvajcvsaadminLogado");
+      window.location.href = "login.html";
+    });
+  </script>
+
+
+</body>
+
+</html>

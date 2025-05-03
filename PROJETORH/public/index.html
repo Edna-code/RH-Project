@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro de Candidatos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      background-color: #fff;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    button.remover {
+      margin-top: 8px;
+      padding: 5px 10px;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button.remover:hover {
+      background-color: #cc0000;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Cadastro de Candidatos</h1>
+
+  <form id="form-candidato">
+    <label for="nome">Nome:</label>
+    <input type="text" id="nome" required />
+
+    <label for="email">E-mail:</label>
+    <input type="email" id="email" required />
+
+    <label for="telefone">Telefone:</label>
+    <input type="tel" id="telefone" required />
+
+    <label for="curriculo">Link do Currículo:</label>
+    <input type="url" id="curriculo" required />
+
+    <label for="vaga">Vaga desejada:</label>
+    <select id="vaga" required>
+      <option value="">Selecione uma vaga</option>
+      <option value="Front-end">Front-end</option>
+      <option value="Back-end">Back-end</option>
+      <option value="Fullstack">Fullstack</option>
+      <option value="UI/UX">UI/UX</option>
+    </select>
+
+    <button type="submit">Cadastrar</button>
+  </form>
+
+  <script>
+    const form = document.getElementById("form-candidato");
+    const lista = document.getElementById("lista");
+
+    // Carregar candidatos salvos ao abrir a página
+    window.addEventListener("load", () => {
+      const candidatosSalvos = JSON.parse(localStorage.getItem("candidatos")) || [];
+      candidatosSalvos.forEach(mostrarCandidatoNaTela);
+    });
+
+    // Envio do formulário
+    form.addEventListener("submit", function (evento) {
+      evento.preventDefault();
+
+      const nome = document.getElementById("nome").value;
+      const email = document.getElementById("email").value;
+      const telefone = document.getElementById("telefone").value;
+      const curriculo = document.getElementById("curriculo").value;
+      const vaga = document.getElementById("vaga").value;
+
+      const candidato = { nome, email, telefone, curriculo, vaga };
+
+      mostrarCandidatoNaTela(candidato);
+
+      const candidatosExistentes = JSON.parse(localStorage.getItem("candidatos")) || [];
+      candidatosExistentes.push(candidato);
+      localStorage.setItem("candidatos", JSON.stringify(candidatosExistentes));
+
+      form.reset();
+    });
+
+    function mostrarCandidatoNaTela(candidato) {
+      const novoCandidato = document.createElement("li");
+
+      novoCandidato.innerHTML = `
+        <strong>${candidato.nome}</strong> - ${candidato.email}<br>
+        Tel: ${candidato.telefone} | Vaga: ${candidato.vaga}<br>
+        Currículo: <a href="${candidato.curriculo}" target="_blank">${candidato.curriculo}</a>
+        <br>
+        <button class="remover">Remover</button>
+      `;
+
+      novoCandidato.querySelector(".remover").addEventListener("click", () => {
+        novoCandidato.remove();
+
+        let candidatos = JSON.parse(localStorage.getItem("candidatos")) || [];
+        candidatos = candidatos.filter((c) => c.email !== candidato.email);
+        localStorage.setItem("candidatos", JSON.stringify(candidatos));
+      });
+
+
+    }
+  </script>
+
+</body>
+
+</html>
