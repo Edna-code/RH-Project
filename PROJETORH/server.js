@@ -85,6 +85,28 @@ app.post("/login", (req, res) => {
     res.json({ sucesso: true }); // Retorna sucesso se a senha estiver correta
   });
 });
+// Rota para atualizar dados de um candidato
+app.put("/candidatos/:id", (req, res) => {
+  const { id } = req.params;
+  const { nome, email, telefone, vaga, curriculo } = req.body;
+  db.run(
+    "UPDATE candidatos SET nome = ?, email = ?, telefone = ?, vaga = ?, curriculo = ? WHERE id = ?",
+    [nome, email, telefone, vaga, curriculo, id],
+    function (err) {
+      if (err) return res.status(500).json({ erro: err.message });
+      res.json({ sucesso: true });
+    }
+  );
+});
+
+// Rota para excluir um candidato
+app.delete("/candidatos/:id", (req, res) => {
+  const { id } = req.params;
+  db.run("DELETE FROM candidatos WHERE id = ?", id, function (err) {
+    if (err) return res.status(500).json({ erro: err.message });
+    res.json({ sucesso: true });
+  });
+});
 
 // Inicia o servidor na porta definida
 app.listen(PORT, () => {
